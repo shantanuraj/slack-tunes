@@ -2,7 +2,7 @@
 
 Simple daemon to track and post currently playing song from iTunes to Slack.
 
-Needs an environment variable `STUNES_TOKEN`.
+Needs an environment variable `STUNES_SLACK_TOKEN`.
 Get from https://api.slack.com/custom-integrations/legacy-tokens
 
 ## Build

@@ -22,6 +22,7 @@ func (s Sync) Start(p provider.Provider, u upstream.Upstream) error {
 	var isPlaying bool
 	var song provider.Song
 	var err error
+	providerName := p.GetName()
 	for {
 		isPlaying, err = p.IsPlaying()
 
@@ -31,7 +32,7 @@ func (s Sync) Start(p provider.Provider, u upstream.Upstream) error {
 
 		if !isPlaying {
 			s.logger.Log("[service-sync] Nothing playing currently")
-			goto Sleep
+			goto Update
 		}
 
 		if song, err = p.CurrentSong(); err != nil {
@@ -44,7 +45,8 @@ func (s Sync) Start(p provider.Provider, u upstream.Upstream) error {
 		}
 
 		s.lastSong = &song
-		if err = u.UpdateSong(song); err != nil {
+	Update:
+		if err = u.UpdateSong(providerName, isPlaying, song); err != nil {
 			log.Fatal("Could not update upstream", err)
 		}
 

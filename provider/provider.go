@@ -20,6 +20,7 @@ var providersMap = map[string]providerMaker{
 
 // Provider is a generic type representing a song provider
 type Provider interface {
+	GetName() string
 	// CurrentSong returns a currently playing song
 	CurrentSong() (Song, error)
 	// IsPlaying returns boolean to indicate if provider is playing

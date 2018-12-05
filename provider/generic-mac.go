@@ -13,6 +13,11 @@ type GenericMacProvider struct {
 	logger      *logger.Logger
 }
 
+// GetName returns the name of the provider
+func (g GenericMacProvider) GetName() string {
+	return g.appName
+}
+
 // CurrentSong fetches the current song from iTunes
 func (g GenericMacProvider) CurrentSong() (Song, error) {
 	song, err := currentSong(iTunes)
