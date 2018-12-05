@@ -21,6 +21,6 @@ func IsSameSong(a, b Song) bool {
 func GetProvider(providerName string) Provider {
 	var p Provider
 	// Only supporting iTunes for now
-	p = ITunes{}
+	p = NewITunes()
 	return p
 }

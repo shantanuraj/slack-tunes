@@ -11,3 +11,8 @@ func (i ITunes) CurrentSong() (Song, error) {
 	}
 	return song, nil
 }
+
+// NewITunes returns an instance of the `ITunes` provider
+func NewITunes() ITunes {
+	return ITunes{}
+}
