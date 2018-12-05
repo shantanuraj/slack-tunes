@@ -13,21 +13,24 @@ type ITunes struct {
 
 // CurrentSong fetches the current song from iTunes
 func (i ITunes) CurrentSong() (Song, error) {
-	song := Song{
-		Title:  "I Am",
-		Artist: "Jorja Smith",
+	song, err := currentSong(iTunes)
+
+	if err != nil {
+		i.logger.Log("[provider-itunes] Error in getting player state", err)
 	}
-	return song, nil
+
+	return song, err
 }
 
 // IsPlaying returns boolean to indicate if iTunes is playing
 func (i ITunes) IsPlaying() (bool, error) {
-	var out string
-	var err error
-	if out, err = tell(iTunes, playerStateCmd); err != nil {
+	playing, err := isPlaying(iTunes)
+
+	if err != nil {
 		i.logger.Log("[provider-itunes] Error in getting player state", err)
 	}
-	return out == "playing", err
+
+	return playing, err
 }
 
 // NewITunes returns an instance of the `ITunes` provider

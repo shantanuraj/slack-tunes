@@ -9,6 +9,7 @@ import (
 const osascript = "osascript"
 const tellCmd = "tell application"
 const playerStateCmd = "player state"
+const currentSongCmd = `artist of current track & " - " & name of current track`
 
 // run executes the AppleScript command and returns the output
 func run(command string) (string, error) {
@@ -50,4 +51,31 @@ func buildTell(application string, commands ...string) string {
 // tell calls executes the tell subcommand for osascript
 func tell(application string, commands ...string) (string, error) {
 	return run(buildTell(application, commands...))
+}
+
+func isPlaying(app string) (bool, error) {
+	var out string
+	var err error
+	if out, err = tell(app, playerStateCmd); err != nil {
+		return false, err
+	}
+	return out == "playing", err
+}
+
+func currentSong(app string) (Song, error) {
+	var out string
+	var err error
+	if out, err = tell(iTunes, currentSongCmd); err != nil {
+		return Song{}, err
+	}
+
+	sep := strings.LastIndex(out, " - ")
+	artist := out[0:sep]
+	title := out[sep+3:]
+
+	song := Song{
+		Artist: artist,
+		Title:  title,
+	}
+	return song, nil
 }
