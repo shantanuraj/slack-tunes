@@ -76,7 +76,7 @@ func build(c *cli.Context) error {
 		outName = formatName(outName, buildOS, buildArch)
 	}
 
-	inFile := path.Join("cmd", "main.go")
+	inFile := path.Join("cmd", "slack-tunes.go")
 	outFile := path.Join(baseDir, "bin", outName)
 
 	args := []string{"build", "-o", outFile, inFile}
