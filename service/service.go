@@ -17,6 +17,7 @@ type Service interface {
 // Sync implements `Service`
 type Sync struct {
 	updateInterval time.Duration
+	lastSong       *provider.Song
 }
 
 // Start starts the song-status sync service
@@ -28,9 +29,13 @@ func (s Sync) Start(p provider.Provider, u upstream.Upstream) error {
 			log.Fatal("Couldn't get current song from provider", err)
 		}
 
-		if err = u.UpdateSong(song); err != nil {
-			log.Fatal("Could not update upstream", err)
+		if s.lastSong == nil || !provider.IsSameSong(*s.lastSong, song) {
+			s.lastSong = &song
+			if err = u.UpdateSong(song); err != nil {
+				log.Fatal("Could not update upstream", err)
+			}
 		}
+
 		time.Sleep(s.updateInterval)
 	}
 }
@@ -39,5 +44,6 @@ func (s Sync) Start(p provider.Provider, u upstream.Upstream) error {
 func NewSync(updateInterval time.Duration) *Sync {
 	return &Sync{
 		updateInterval: updateInterval,
+		lastSong:       nil,
 	}
 }

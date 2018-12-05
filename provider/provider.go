@@ -12,6 +12,11 @@ type Provider interface {
 	CurrentSong() (Song, error)
 }
 
+// IsSameSong returns true if given songs are the same
+func IsSameSong(a, b Song) bool {
+	return a.Title == b.Title && a.Artist == b.Artist
+}
+
 // GetProvider returns the actual provivder for a given provider name
 func GetProvider(providerName string) Provider {
 	var p Provider
