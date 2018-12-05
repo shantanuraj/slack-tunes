@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/shantanuraj/slack-tunes/logger"
 	"github.com/shantanuraj/slack-tunes/provider"
 	"github.com/shantanuraj/slack-tunes/service"
 	"github.com/shantanuraj/slack-tunes/upstream"
@@ -26,6 +27,8 @@ const (
 	FlagUpstream = "upstream"
 	// DefaultUpstream is the default upstream
 	DefaultUpstream = "slack"
+	// FlagVerbose is the flag name for turning on verbose mode
+	FlagVerbose = "verbose"
 )
 
 // flags for app
@@ -34,6 +37,10 @@ var flags = []cli.Flag{
 		Name:  parseName(FlagProvider),
 		Value: DefaultProvider,
 		Usage: "provider to fetch song info from can be `itunes`",
+	},
+	cli.BoolFlag{
+		Name:  FlagVerbose,
+		Usage: "turn on logs",
 	},
 }
 
@@ -52,6 +59,9 @@ func parseName(flagName string) string {
 }
 
 func run(c *cli.Context) error {
+	l := logger.NewLogger(c.Bool(FlagVerbose))
+	l.Log("Starting", AppName)
+
 	p := provider.GetProvider(c.String(FlagProvider))
 	u := upstream.GetUpstream(c.String(FlagUpstream))
 	s := service.Sync{}
