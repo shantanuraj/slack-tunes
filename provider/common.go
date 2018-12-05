@@ -65,7 +65,7 @@ func isPlaying(app string) (bool, error) {
 func currentSong(app string) (Song, error) {
 	var out string
 	var err error
-	if out, err = tell(iTunes, currentSongCmd); err != nil {
+	if out, err = tell(app, currentSongCmd); err != nil {
 		return Song{}, err
 	}
 
