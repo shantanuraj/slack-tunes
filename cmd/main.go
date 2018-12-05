@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/shantanuraj/slack-tunes/logger"
@@ -85,15 +86,13 @@ func run(c *cli.Context) error {
 	updateInterval := c.Int(FlagInterval)
 
 	l.Log(
-		"[main] Starting",
-		AppName,
-		"getting current song from",
+		"[main]",
+		"provider:",
 		providerName,
-		"posting updates to",
+		"upstream:",
 		upstreamName,
-		"updating every",
-		updateInterval,
-		"seconds",
+		"update-interval:",
+		strconv.Itoa(updateInterval)+"s",
 	)
 
 	p := provider.GetProvider(providerName)
