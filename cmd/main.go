@@ -43,6 +43,11 @@ var flags = []cli.Flag{
 		Value: DefaultProvider,
 		Usage: "provider to fetch song info from can be `itunes`",
 	},
+	cli.StringFlag{
+		Name:  parseName(FlagUpstream),
+		Value: DefaultUpstream,
+		Usage: "upstream to update song info to can be `slack`",
+	},
 	cli.BoolFlag{
 		Name:  FlagVerbose,
 		Usage: "turn on logs",
@@ -74,10 +79,25 @@ func timeInSeconds(updateInterval int) time.Duration {
 
 func run(c *cli.Context) error {
 	l := logger.NewLogger(c.Bool(FlagVerbose))
-	l.Log("[main] Starting", AppName)
 
-	p := provider.GetProvider(c.String(FlagProvider))
-	u := upstream.GetUpstream(c.String(FlagUpstream))
-	s := service.NewSync(timeInSeconds(c.Int(FlagInterval)))
+	providerName := c.String(FlagProvider)
+	upstreamName := c.String(FlagUpstream)
+	updateInterval := c.Int(FlagInterval)
+
+	l.Log(
+		"[main] Starting",
+		AppName,
+		"getting current song from",
+		providerName,
+		"posting updates to",
+		upstreamName,
+		"updating every",
+		updateInterval,
+		"seconds",
+	)
+
+	p := provider.GetProvider(providerName)
+	u := upstream.GetUpstream(upstreamName)
+	s := service.NewSync(timeInSeconds(updateInterval))
 	return s.Start(p, u)
 }
