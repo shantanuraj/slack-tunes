@@ -10,6 +10,8 @@ type Song struct {
 type Provider interface {
 	// CurrentSong returns a currently playing song
 	CurrentSong() (Song, error)
+	// IsPlaying returns boolean to indicate if provider is playing
+	IsPlaying() (bool, error)
 }
 
 // IsSameSong returns true if given songs are the same
