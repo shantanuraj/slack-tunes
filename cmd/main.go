@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/shantanuraj/slack-tunes/logger"
 	"github.com/shantanuraj/slack-tunes/provider"
@@ -29,6 +30,10 @@ const (
 	DefaultUpstream = "slack"
 	// FlagVerbose is the flag name for turning on verbose mode
 	FlagVerbose = "verbose"
+	// FlagInterval is the flag name for specifying update interval
+	FlagInterval = "interval"
+	// DefaultInterval is the default interval value
+	DefaultInterval = 10
 )
 
 // flags for app
@@ -41,6 +46,11 @@ var flags = []cli.Flag{
 	cli.BoolFlag{
 		Name:  FlagVerbose,
 		Usage: "turn on logs",
+	},
+	cli.IntFlag{
+		Name:  parseName(FlagInterval),
+		Value: DefaultInterval,
+		Usage: "set custom time interval between api updates in seconds",
 	},
 }
 
@@ -58,12 +68,16 @@ func parseName(flagName string) string {
 	return fmt.Sprintf("%s, %v", flagName, string(flagName[0]))
 }
 
+func timeInSeconds(updateInterval int) time.Duration {
+	return time.Duration(updateInterval) * time.Second
+}
+
 func run(c *cli.Context) error {
 	l := logger.NewLogger(c.Bool(FlagVerbose))
 	l.Log("Starting", AppName)
 
 	p := provider.GetProvider(c.String(FlagProvider))
 	u := upstream.GetUpstream(c.String(FlagUpstream))
-	s := service.Sync{}
+	s := service.NewSync(timeInSeconds(c.Int(FlagInterval)))
 	return s.Start(p, u)
 }

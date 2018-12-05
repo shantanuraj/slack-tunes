@@ -8,8 +8,6 @@ import (
 	"github.com/shantanuraj/slack-tunes/upstream"
 )
 
-var timeDelta = 10 * time.Second
-
 // Service takes a `Provider` and `Upstream` and updates the `Upstream` at a fixed
 // interval with the current song from `Provider`
 type Service interface {
@@ -18,10 +16,11 @@ type Service interface {
 
 // Sync implements `Service`
 type Sync struct {
+	updateInterval time.Duration
 }
 
 // Start starts the song-status sync service
-func (a Sync) Start(p provider.Provider, u upstream.Upstream) error {
+func (s Sync) Start(p provider.Provider, u upstream.Upstream) error {
 	var song provider.Song
 	var err error
 	for {
@@ -32,7 +31,13 @@ func (a Sync) Start(p provider.Provider, u upstream.Upstream) error {
 		if err = u.UpdateSong(song); err != nil {
 			log.Fatal("Could not update upstream", err)
 		}
-		time.Sleep(timeDelta)
+		time.Sleep(s.updateInterval)
 	}
-	// return err
+}
+
+// NewSync returns an instance of the sync service
+func NewSync(updateInterval time.Duration) *Sync {
+	return &Sync{
+		updateInterval: updateInterval,
+	}
 }
