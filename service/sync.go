@@ -13,12 +13,12 @@ import (
 // Sync implements `Service`
 type Sync struct {
 	updateInterval time.Duration
-	lastSong       *provider.Song
+	lastSong       provider.Song
 	logger         *logger.Logger
 }
 
 // Start starts the song-status sync service
-func (s Sync) Start(p provider.Provider, u upstream.Upstream) error {
+func (s *Sync) Start(p provider.Provider, u upstream.Upstream) error {
 	var isPlaying bool
 	var song provider.Song
 	var err error
@@ -40,17 +40,12 @@ func (s Sync) Start(p provider.Provider, u upstream.Upstream) error {
 		}
 		s.logger.Log("[service-sync] Currently playing", song.Title, "by", song.Artist)
 
-		if s.lastSong != nil && provider.IsSameSong(*s.lastSong, song) {
-			goto Sleep
-		}
-
-		s.lastSong = &song
+		s.lastSong = song
 	Update:
 		if err = u.UpdateSong(providerName, isPlaying, song); err != nil {
 			log.Fatal("Could not update upstream", err)
 		}
 
-	Sleep:
 		time.Sleep(s.updateInterval)
 	}
 }
@@ -59,7 +54,7 @@ func (s Sync) Start(p provider.Provider, u upstream.Upstream) error {
 func NewSync(updateInterval time.Duration) *Sync {
 	return &Sync{
 		updateInterval: updateInterval,
-		lastSong:       nil,
+		lastSong:       provider.Song{},
 		logger:         logger.GetLogger(),
 	}
 }

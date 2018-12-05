@@ -43,7 +43,6 @@ func (s *Slack) UpdateSong(providerName string, isPlaying bool, song provider.So
 		return nil
 	}
 	s.lastStatus = &status
-	s.logger.Log("[focus] setting new lastStatus", `"`+*s.lastStatus+`"`)
 
 	if err = s.api.SetUserCustomStatus(status, emoji); err != nil {
 		s.logger.Log("[upstream-slack] Could not update status", err)
