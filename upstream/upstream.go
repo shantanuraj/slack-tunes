@@ -12,6 +12,6 @@ type Upstream interface {
 func GetUpstream(providerName string) Upstream {
 	var u Upstream
 	// Only supporting Slack for now
-	u = Slack{}
+	u = NewSlack()
 	return u
 }

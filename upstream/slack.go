@@ -7,11 +7,19 @@ import (
 )
 
 // Slack updates the song info to a slack status
-type Slack struct{}
+type Slack struct {
+	logger *logger.Logger
+}
 
 // UpdateSong posts the song data to Slack's status API
-func (i Slack) UpdateSong(song provider.Song) error {
-	l := logger.GetLogger()
-	l.Log("[upstream-slack] Updating status to", song.Title, "by", song.Artist)
+func (s Slack) UpdateSong(song provider.Song) error {
+	s.logger.Log("[upstream-slack] Updating status to", song.Title, "by", song.Artist)
 	return nil
+}
+
+// NewSlack returns an instance of the slack upstream
+func NewSlack() Slack {
+	return Slack{
+		logger: logger.GetLogger(),
+	}
 }
