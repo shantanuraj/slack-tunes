@@ -74,7 +74,7 @@ func timeInSeconds(updateInterval int) time.Duration {
 
 func run(c *cli.Context) error {
 	l := logger.NewLogger(c.Bool(FlagVerbose))
-	l.Log("Starting", AppName)
+	l.Log("[main] Starting", AppName)
 
 	p := provider.GetProvider(c.String(FlagProvider))
 	u := upstream.GetUpstream(c.String(FlagUpstream))

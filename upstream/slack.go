@@ -12,6 +12,6 @@ type Slack struct{}
 // UpdateSong posts the song data to Slack's status API
 func (i Slack) UpdateSong(song provider.Song) error {
 	l := logger.GetLogger()
-	l.Log("Currently playing", song.Title, "by", song.Artist)
+	l.Log("[upstream-slack] Updating status to", song.Title, "by", song.Artist)
 	return nil
 }
