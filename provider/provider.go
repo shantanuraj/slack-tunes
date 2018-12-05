@@ -1,9 +1,21 @@
 package provider
 
+import (
+	"log"
+)
+
 // Song represents a song playing in any provider
 type Song struct {
 	Title  string
 	Artist string
+}
+
+type providerMaker = func() Provider
+
+var providersMap = map[string]providerMaker{
+	"itunes":  NewITunes,
+	"spotify": NewSpotify,
+	"tidal":   NewTidal,
 }
 
 // Provider is a generic type representing a song provider
@@ -21,8 +33,11 @@ func IsSameSong(a, b Song) bool {
 
 // GetProvider returns the actual provivder for a given provider name
 func GetProvider(providerName string) Provider {
-	var p Provider
-	// Only supporting iTunes for now
-	p = NewITunes()
-	return p
+	maker, ok := providersMap[providerName]
+
+	if !ok {
+		log.Fatal("Invalid provider specified")
+	}
+
+	return maker()
 }

@@ -42,7 +42,7 @@ var flags = []cli.Flag{
 	cli.StringFlag{
 		Name:  parseName(FlagProvider),
 		Value: DefaultProvider,
-		Usage: "provider to fetch song info from can be `itunes`",
+		Usage: "provider to fetch song info from can be `itunes`, `spotify`",
 	},
 	cli.StringFlag{
 		Name:  parseName(FlagUpstream),
