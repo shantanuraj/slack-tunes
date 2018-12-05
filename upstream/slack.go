@@ -13,8 +13,9 @@ import (
 
 // Slack updates the song info to a slack status
 type Slack struct {
-	api    *slack.Client
-	logger *logger.Logger
+	api        *slack.Client
+	logger     *logger.Logger
+	lastStatus *string
 }
 
 func getStatusText(providerName string, isPlaying bool, s provider.Song) string {
@@ -32,28 +33,40 @@ func getStatusEmoji(isPlaying bool) string {
 }
 
 // UpdateSong posts the song data to Slack's status API
-func (s Slack) UpdateSong(providerName string, isPlaying bool, song provider.Song) error {
+func (s *Slack) UpdateSong(providerName string, isPlaying bool, song provider.Song) error {
 	var err error
 	status := getStatusText(providerName, isPlaying, song)
 	emoji := getStatusEmoji(isPlaying)
 
+	if s.lastStatus != nil && status == *s.lastStatus {
+		s.logger.Log("[upstream-slack] Same status not updating api")
+		return nil
+	}
+	s.lastStatus = &status
+	s.logger.Log("[focus] setting new lastStatus", `"`+*s.lastStatus+`"`)
+
 	if err = s.api.SetUserCustomStatus(status, emoji); err != nil {
 		s.logger.Log("[upstream-slack] Could not update status", err)
 	} else {
-		s.logger.Log("[upstream-slack] Updated status to", emoji, status)
+		if status == "" || emoji == "" {
+			s.logger.Log("[upstream-slack] Reseted status")
+		} else {
+			s.logger.Log("[upstream-slack] Updated status to", emoji, status)
+		}
 	}
 
 	return err
 }
 
 // NewSlack returns an instance of the slack upstream
-func NewSlack() Slack {
+func NewSlack() *Slack {
 	apiToken := os.Getenv("STUNES_SLACK_TOKEN")
 	if apiToken == "" {
 		log.Fatal("Couldn't get environment variable for Slack")
 	}
-	return Slack{
-		api:    slack.New(apiToken),
-		logger: logger.GetLogger(),
+	return &Slack{
+		api:        slack.New(apiToken),
+		logger:     logger.GetLogger(),
+		lastStatus: nil,
 	}
 }
