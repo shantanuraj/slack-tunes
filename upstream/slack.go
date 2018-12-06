@@ -48,7 +48,7 @@ func (s *Slack) UpdateSong(providerName string, isPlaying bool, song provider.So
 		s.logger.Log("[upstream-slack] Could not update status", err)
 	} else {
 		if status == "" || emoji == "" {
-			s.logger.Log("[upstream-slack] Reseted status")
+			s.logger.Log("[upstream-slack] Resetted status")
 		} else {
 			s.logger.Log("[upstream-slack] Updated status to", emoji, status)
 		}
