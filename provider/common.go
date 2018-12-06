@@ -1,7 +1,7 @@
 package provider
 
 import (
-	"errors"
+	"fmt"
 	"os/exec"
 	"strings"
 )
@@ -18,7 +18,7 @@ func run(command string) (string, error) {
 	prettyOutput := strings.Replace(string(out), "\n", "", -1)
 
 	if err != nil {
-		return "", errors.New(err.Error() + ": " + prettyOutput + " (" + command + ")")
+		return "", fmt.Errorf("%s: %s (%s)", err.Error(), prettyOutput, command)
 	}
 
 	return prettyOutput, nil
@@ -39,7 +39,7 @@ func build(args ...string) string {
 
 // buildTell builds the tell command
 func buildTell(application string, commands ...string) string {
-	app := "\"" + application + "\""
+	app := fmt.Sprintf(`"%s"`, application)
 	args := []string{tellCmd, app, "\n"}
 	for _, command := range commands {
 		args = append(args, command, "\n")
