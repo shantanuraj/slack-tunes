@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/signal"
 	"strconv"
+	"syscall"
 	"time"
 
 	"github.com/shantanuraj/slack-tunes/logger"
@@ -13,6 +15,8 @@ import (
 
 	"github.com/urfave/cli"
 )
+
+type cleanupFn = func()
 
 const (
 	// AppVersion is the verison of the app
@@ -78,6 +82,12 @@ func timeInSeconds(updateInterval int) time.Duration {
 	return time.Duration(updateInterval) * time.Second
 }
 
+func setupExit(c chan os.Signal, onExit cleanupFn) {
+	<-c
+	onExit()
+	os.Exit(1)
+}
+
 func run(c *cli.Context) error {
 	l := logger.NewLogger(c.Bool(FlagVerbose))
 
@@ -98,5 +108,10 @@ func run(c *cli.Context) error {
 	p := provider.GetProvider(providerName)
 	u := upstream.GetUpstream(upstreamName)
 	s := service.NewSync(timeInSeconds(updateInterval))
+
+	exitChannel := make(chan os.Signal)
+	signal.Notify(exitChannel, os.Interrupt, syscall.SIGTERM)
+	go setupExit(exitChannel, func() { s.Reset(p, u) })
+
 	return s.Start(p, u)
 }

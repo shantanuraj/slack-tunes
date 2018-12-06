@@ -17,6 +17,11 @@ type Sync struct {
 	logger         *logger.Logger
 }
 
+// Reset the status
+func (s *Sync) Reset(p provider.Provider, u upstream.Upstream) error {
+	return u.UpdateSong(p.GetName(), false, provider.Song{})
+}
+
 // Start starts the song-status sync service
 func (s *Sync) Start(p provider.Provider, u upstream.Upstream) error {
 	var isPlaying bool
