@@ -18,9 +18,9 @@ func (g GenericMacProvider) GetName() string {
 	return g.appName
 }
 
-// CurrentSong fetches the current song from iTunes
+// CurrentSong fetches the current song from app
 func (g GenericMacProvider) CurrentSong() (Song, error) {
-	song, err := currentSong(iTunes)
+	song, err := currentSong(g.appName)
 
 	if err != nil {
 		g.logger.Log(g.debugPrefix, "Error in getting player state", err)
@@ -29,9 +29,9 @@ func (g GenericMacProvider) CurrentSong() (Song, error) {
 	return song, err
 }
 
-// IsPlaying returns boolean to indicate if iTunes is playing
+// IsPlaying returns boolean to indicate if app is playing
 func (g GenericMacProvider) IsPlaying() (bool, error) {
-	playing, err := isPlaying(iTunes)
+	playing, err := isPlaying(g.appName)
 
 	if err != nil {
 		g.logger.Log(g.debugPrefix, "Error in getting player state", err)
