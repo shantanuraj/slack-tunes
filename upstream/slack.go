@@ -7,7 +7,7 @@ import (
 
 	"github.com/shantanuraj/slack-tunes/logger"
 
-	"github.com/nlopes/slack"
+	"github.com/slack-go/slack"
 
 	"github.com/shantanuraj/slack-tunes/provider"
 )
