@@ -19,9 +19,15 @@ type Slack struct {
 	lastStatus *string
 }
 
+const slackMaxStatusLength = 100
+
 func getStatusText(providerName string, isPlaying bool, s provider.Song) string {
 	if isPlaying {
-		return fmt.Sprintf("%s by %s on %s", s.Title, s.Artist, providerName)
+		status := fmt.Sprintf("%s by %s on %s", s.Title, s.Artist, providerName)
+		if len(status) > slackMaxStatusLength {
+			return status[:slackMaxStatusLength-3] + "..."
+		}
+		return status
 	}
 	return ""
 }
