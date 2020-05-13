@@ -20,7 +20,7 @@ type cleanupFn = func()
 
 const (
 	// AppVersion is the verison of the app
-	AppVersion = "1.5.0"
+	AppVersion = "1.6.0"
 	// AppName is the name of the app
 	AppName = "slack-tunes"
 	// AppUsage is the help text for the app
