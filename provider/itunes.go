@@ -1,6 +1,6 @@
 package provider
 
-const iTunes = "iTunes"
+const iTunes = "Music"
 
 // NewITunes returns an instance of the `ITunes` provider
 func NewITunes() Provider {
