@@ -5,8 +5,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/nlopes/slack"
 	"github.com/shantanuraj/slack-tunes/logger"
+
+	"github.com/nlopes/slack"
 
 	"github.com/shantanuraj/slack-tunes/provider"
 )
@@ -44,8 +45,8 @@ func (s *Slack) UpdateSong(providerName string, isPlaying bool, song provider.So
 	}
 	s.lastStatus = &status
 
-	if err = s.api.SetUserCustomStatus(status, emoji); err != nil {
-		s.logger.Log("[upstream-slack] Could not update status", err)
+	if err = s.api.SetUserCustomStatus(status, emoji, 0); err != nil {
+		s.logger.Log("[upstream-slack] Could not update status", err, 0)
 	} else {
 		if status == "" || emoji == "" {
 			s.logger.Log("[upstream-slack] Resetted status")
