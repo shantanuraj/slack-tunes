@@ -1,0 +1,21 @@
+name: Build release binary
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  release-darwin-amd64:
+    name: release darwin/amd64
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: compile and release
+      uses: ngs/go-release.action@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        GOARCH: amd64
+        GOOS: darwin
+        CMD_PATH: "-o slack-tunes cmd/slack-tunes.go"
