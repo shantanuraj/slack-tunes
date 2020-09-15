@@ -83,7 +83,7 @@ func build(c *cli.Context) error {
 
 	cmd := exec.Command("go", args...)
 
-	cmd.Env = setEnv(cmd.Env, EnvOS, buildOS)
+	cmd.Env = setEnv(os.Environ(), EnvOS, buildOS)
 	cmd.Env = setEnv(cmd.Env, EnvArch, buildArch)
 	cmd.Env = setEnv(cmd.Env, EnvPath, goPath)
 
