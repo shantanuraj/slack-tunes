@@ -51,7 +51,12 @@ func (s *Slack) UpdateSong(providerName string, isPlaying bool, song provider.So
 	}
 	s.lastStatus = &status
 
-	if err = s.api.SetUserCustomStatus(status, emoji, 0); err != nil {
+	auth, err := s.api.AuthTest()
+	if err != nil {
+		s.logger.Log("[upstream-slack]", "Could not get auth info", err)
+	}
+
+	if err = s.api.SetUserCustomStatusWithUser(auth.UserID, status, emoji, 0); err != nil {
 		s.logger.Log("[upstream-slack] Could not update status", err, 0)
 	} else {
 		if status == "" || emoji == "" {
